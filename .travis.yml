@@ -15,7 +15,7 @@ after_success:
     - docker build -t pknuclei/multi-server ./server
     - docker build -t pknuclei/multi-worker ./worker
     # Log in to docker cli
-    - echo "$DOCKER_PASSWORD" | docker login -u "$docker_id" --password-stdin
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
     # Take the above docker images and push them to docker hub
     - docker push pknuclei/multi-client
     - docker push pknuclei/multi-nginx
