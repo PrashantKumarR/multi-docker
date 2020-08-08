@@ -1,0 +1,35 @@
+sudo: required
+language: generic
+services:
+    - docker
+
+before_install:
+    - docker build -t pkdocker/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true pkdocker/react-test npm run test -- --coverage
+
+after_success:
+    - docker build -t pkdocker/multi-client ./client
+    - docker build -t pkdocker/multi-nginx ./nginx
+    - docker build -t pkdocker/multi-server ./server
+    - docker build -t pkdocker/multi-worker ./worker
+    # Log in to docker cli
+    - echo "$DOCKER_PASSWORD" | docker login -u "$docker_id" --password-stdin
+    # Take the above docker images and push them to docker hub
+    - docker push pkdocker/multi-client
+    - docker push pkdocker/multi-nginx
+    - docker push pkdocker/multi-server
+    - docker push pkdocker/multi-worker
+
+deploy:
+    provider: elasticbeanstalk
+    region: ap-south-1
+    app: docker-react
+    env: DockerReact-env
+    bucket_name: elasticbeanstalk-ap-south-1-459004692588
+    bucket_path: docker-react
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET
