@@ -24,3 +24,15 @@ after_success:
     - docker push pknuclei/multi-nginx
     - docker push pknuclei/multi-server
     - docker push pknuclei/multi-worker
+
+deploy:
+    provider: elasticbeanstalk
+    region: ap-south-1
+    app: my-multi-docker
+    env: MyMultiDocker-env
+    bucket_name: elasticbeanstalk-ap-south-1-459004692588
+    bucket_path: docker-multi
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
