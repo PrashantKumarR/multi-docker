@@ -26,6 +26,7 @@ after_success:
     - docker push pknuclei/multi-worker
 
 deploy:
+    edge: true
     provider: elasticbeanstalk
     region: ap-south-1
     app: my-multi-docker
